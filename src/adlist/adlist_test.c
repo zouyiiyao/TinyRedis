@@ -59,6 +59,7 @@ void printNodeList(list* l) {
         printf("%d ", node->data);
     }
     printf("\n");
+    listReleaseIterator(iter);
 }
 
 int main(int argc, char* argv[]) {
