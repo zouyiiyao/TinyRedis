@@ -21,7 +21,7 @@ static int dict_can_resize = 1;
 static unsigned int dict_force_resize_ratio = 5;
 
 /* 
- * rehash会进行大量的内存写入操作，
+ * rehash会进行大量的内存写入操作，为了避免不必要的内存写入，最大限度节约内存(Redis主要瓶颈)，
  * 通过 dictEnableResize() 和 dictDisableResize() 两个函数，
  * 程序可以手动地允许或阻止哈希表进行 rehash ，
  * 这在 Redis 使用子进程进行保存操作时，可以有效地利用 copy-on-write 机制。
