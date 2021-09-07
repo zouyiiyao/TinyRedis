@@ -27,6 +27,10 @@
 #define REDIS_OK 0
 #define REDIS_ERR -1
 
+/* 字典负载参数，小于该值则缩小字典 */
+/* Hash table parameters */
+#define REDIS_HT_MINFILL 10
+
 /* 对象类型 */
 /* Object types */
 #define REDIS_STRING 0    /* 字符串类型 */
@@ -100,6 +104,21 @@ typedef struct {
 } listTypeEntry;
 
 /*
+ * 集合类型迭代器结构体定义
+ */
+typedef struct {
+
+    robj* subject;
+
+    int encoding;
+
+    int ii;
+
+    dictIterator* di;
+
+} setTypeIterator;
+
+/*
  * 外部使用的全局变量声明
  */
 /*
@@ -108,6 +127,11 @@ typedef struct {
 extern dictType setDictType;
 extern dictType zsetDictType;
 extern dictType hashDictType;
+
+/*
+ * 判断是否要缩小字典
+ */
+int htNeedsResize(dict* dict);
 
 /*
  * 获取LRU时钟
@@ -164,5 +188,18 @@ void listTypeInsert(listTypeEntry* entry, robj* value, int where);
 int listTypeEqual(listTypeEntry* entry, robj* o);
 void listTypeDelete(listTypeEntry* entry);
 void listTypeConvert(robj* subject, int enc);
+
+/* Set data type */
+robj* setTypeCreate(robj* value);
+int setTypeAdd(robj* subject, robj* value);
+int setTypeRemove(robj* subject, robj* value);
+int setTypeIsMember(robj* subject, robj* value);
+setTypeIterator* setTypeInitIterator(robj* subject);
+void setTypeReleaseIterator(setTypeIterator* si);
+int setTypeNext(setTypeIterator* si, robj** objele, int64_t* llele);
+robj* setTypeNextObject(setTypeIterator* si);
+int setTypeRandomElement(robj* setobj, robj** objele, int64_t* llele);
+unsigned long setTypeSize(robj* subject);
+void setTypeConvert(robj* subject, int enc);
 
 #endif //TINYREDIS_REDIS_H

@@ -316,7 +316,7 @@ static void _dictRehashStep(dict* d) {
  *
  * 如果字典rehash标识打开，会进行单步rehash
  *
- * 注意:  每次增加键值对时都会检查是否满足开始rehash条件，如果满足即开始渐进式rehash
+ * 注意: 每次增加键值对时都会检查是否满足开始rehash条件，如果满足即开始渐进式rehash
  */
 int dictAdd(dict* d, void* key, void* val) {
     // 尝试添加键到字典，并返回包含这个键的新哈希节点

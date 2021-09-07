@@ -7,12 +7,22 @@ RMFLAGS = -rf
 T_LIST_TEST = t_list_test
 T_LIST_TEST_OBJ = sds.o adlist.o intset.o dict.o zskiplist.o ziplist.o utils.o zmalloc.o object.o redis.o t_list.o t_list_test.o
 
+T_SET_TEST = t_set_test
+T_SET_TEST_OBJ = sds.o adlist.o intset.o dict.o zskiplist.o ziplist.o utils.o zmalloc.o object.o redis.o t_set.o t_set_test.o
+
 t_list_test: $(T_LIST_TEST_OBJ)
 	$(CC) $(CCFLAGS) -o $(T_LIST_TEST) $(T_LIST_TEST_OBJ)
+
+t_set_test: $(T_SET_TEST_OBJ)
+	$(CC) $(CCFLAGS) -o $(T_SET_TEST) $(T_SET_TEST_OBJ)
 
 t_list_test.o: t_list_test.c redis.h zmalloc.h config.h utils.h sds.h dict.h adlist.h ziplist.h \
  intset.h zskiplist.h
 	$(CC) $(CCFLAGS) -c t_list_test.c
+
+t_set_test.o: t_set_test.c redis.h zmalloc.h config.h utils.h sds.h dict.h adlist.h ziplist.h \
+ intset.h zskiplist.h
+	$(CC) $(CCFLAGS) -c t_set_test.c
 
 redis.o: redis.c redis.h zmalloc.h config.h utils.h sds.h dict.h adlist.h ziplist.h \
  intset.h zskiplist.h redis_obj.h
@@ -49,6 +59,10 @@ object.o: object.c redis.h zmalloc.h config.h utils.h sds.h dict.h adlist.h zipl
 t_list.o: t_list.c redis.h zmalloc.h config.h utils.h sds.h dict.h adlist.h ziplist.h \
  intset.h zskiplist.h
 	$(CC) $(CCFLAGS) -c t_list.c
+
+t_set.o: t_set.c redis.h zmalloc.h config.h utils.h sds.h dict.h adlist.h ziplist.h \
+ intset.h zskiplist.h
+	$(CC) $(CCFLAGS) -c t_set.c
 
 clean:
 	$(RM) $(RMFLAGS) *.o *test

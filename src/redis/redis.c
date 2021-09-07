@@ -132,3 +132,14 @@ dictType hashDictType = {
     dictRedisObjectDestructor,
     dictRedisObjectDestructor
 };
+
+/*
+ * 判断字典是否需要缩小
+ */
+int htNeedsResize(dict* dict) {
+    long long size, used;
+
+    size = dictSlots(dict);
+    used = dictSize(dict);
+    return (size && used && size > DICT_HT_INITIAL_SIZE && (used * 100 / size < REDIS_HT_MINFILL));
+}
