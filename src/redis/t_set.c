@@ -4,8 +4,6 @@
 
 #include "redis.h"
 
-#define SET_MAX_INTSET_ENTRIES 512
-
 /*
  * Set API
  */

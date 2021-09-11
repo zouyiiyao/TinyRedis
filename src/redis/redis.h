@@ -63,6 +63,15 @@
 #define REDIS_LRU_CLOCK_RESOLUTION 1000
 
 /*
+ * 更换底层编码有关的宏
+ */
+#define HASH_MAX_ZIPLIST_ENTRIES 512
+#define HASH_MAX_ZIPLIST_VALUE 64
+#define LIST_MAX_ZIPLIST_ENTRIES 512
+#define LIST_MAX_ZIPLIST_VALUE 64
+#define SET_MAX_INTSET_ENTRIES 512
+
+/*
  * 有序集合结构体定义
  */
 typedef struct zset {
@@ -117,6 +126,28 @@ typedef struct {
     dictIterator* di;
 
 } setTypeIterator;
+
+/*
+ * 哈希类型迭代器结构体定义
+ */
+typedef struct {
+
+    robj* subject;
+
+    int encoding;
+
+    unsigned char* fptr;
+
+    unsigned char* vptr;
+
+    dictIterator* di;
+
+    dictEntry* de;
+
+} hashTypeIterator;
+
+#define REDIS_HASH_KEY 1
+#define REDIS_HASH_VALUE 2
 
 /*
  * 外部使用的全局变量声明
@@ -201,5 +232,21 @@ robj* setTypeNextObject(setTypeIterator* si);
 int setTypeRandomElement(robj* setobj, robj** objele, int64_t* llele);
 unsigned long setTypeSize(robj* subject);
 void setTypeConvert(robj* subject, int enc);
+
+/* Hash data type */
+void hashTypeConvert(robj* o, int enc);
+void hashTypeTryConversion(robj* subject, robj** argv, int start, int end);
+/* void hashTypeTryObjectEncoding(robj* subject, robj** o1, robj** o2); */
+robj* hashTypeGetObject(robj* o, robj* key);
+int hashTypeExists(robj* o, robj* key);
+int hashTypeSet(robj* o, robj* key, robj* value);
+int hashTypeDelete(robj* o, robj* key);
+unsigned long hashTypeLength(robj* o);
+hashTypeIterator* hashTypeInitIterator(robj* subject);
+void hashTypeReleaseIterator(hashTypeIterator* hi);
+int hashTypeNext(hashTypeIterator* hi);
+void hashTypeCurrentFromZiplist(hashTypeIterator* hi, int what, unsigned char** vstr, unsigned int* vlen, long long* vll);
+void hashTypeCurrentFromHashTable(hashTypeIterator* hi, int what, robj** dst);
+robj* hashTypeCurrentObject(hashTypeIterator* hi, int what);
 
 #endif //TINYREDIS_REDIS_H

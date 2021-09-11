@@ -631,8 +631,8 @@ dictIterator* dictGetSafeIterator(dict* d) {
  * 获取迭代器当前指向的节点
  *
  * 如果字典正在rehash(rehashidx != -1)，则会迭代0号和1号哈希表
- * 非安全迭代器迭代过程允许单步rehash，可能重复，但是不会漏
- * 安全迭代器迭代过程禁止单步rehash，保证不会重复
+ * 非安全迭代器迭代过程字典是只读的，禁止单步rehash，通过指纹
+ * 安全迭代器迭代过程可以修改，禁止单步rehash，保证不会重复
  */
 dictEntry* dictNext(dictIterator* iter) {
     while (1) {

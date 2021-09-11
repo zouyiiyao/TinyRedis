@@ -4,9 +4,6 @@
 
 #include "redis.h"
 
-#define LIST_MAX_ZIPLIST_ENTRIES 512
-#define LIST_MAX_ZIPLIST_VALUE 64
-
 /*
  * List API
  */
