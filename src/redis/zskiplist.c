@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "zskiplist.h"
 #include "zmalloc.h"
+#include "redis.h"
 
 /*
  * 创建一个层数为level的跳跃表节点，
@@ -56,8 +57,7 @@ zskiplist* zslCreate(void) {
  */
 void zslFreeNode(zskiplistNode* node) {
 
-    // 引用计数目前不使用
-    /* decrRefCount(node->obj); */
+    decrRefCount(node->obj);
 
     // 释放跳跃表节点空间
     zfree(node);
@@ -168,7 +168,7 @@ zskiplistNode* zslInsert(zskiplist* zsl, double score, robj* obj) {
     x = zslCreateNode(level, score, obj);
 
 
-    printf("rank[0]: %d\n", rank[0]);
+    /* printf("rank[0]: %d\n", rank[0]); */
     // 将update数组记录的节点对应层的指针指向新节点，并设置跨度
     for (i = 0; i < level; i++) {
 
@@ -181,9 +181,9 @@ zskiplistNode* zslInsert(zskiplist* zsl, double score, robj* obj) {
 
         update[i]->level[i].span = (rank[0] - rank[i]) + 1;
 
-        printf("i: %d rank[%d]: %d x->level[%d].span: %d update[%d]->level[%d].span: %d\n", i, i, rank[i], i, x->level[i].span, i, i, update[i]->level[i].span);
+        /* printf("i: %d rank[%d]: %d x->level[%d].span: %d update[%d]->level[%d].span: %d\n", i, i, rank[i], i, x->level[i].span, i, i, update[i]->level[i].span); */
     }
-    printf("\n");
+    /* printf("\n"); */
 
     // 未接触层span要增1，中间插入了一个节点(跨越)
     for (i = level; i < zsl->level; i++) {
@@ -360,7 +360,7 @@ zskiplistNode* zslLastInRange(zskiplist* zsl, zrangespec* range) {
 /*
  * 删除给定Score范围内的跳跃表节点，返回删除的节点个数
  */
-unsigned long zslDeleteRangeByScore(zskiplist* zsl, zrangespec* range /* , dict* dict */) {
+unsigned long zslDeleteRangeByScore(zskiplist* zsl, zrangespec* range , dict* dict) {
     zskiplistNode* update[ZSKIPLIST_MAXLEVEL];
     zskiplistNode* x;
     unsigned long removed = 0;
@@ -381,7 +381,7 @@ unsigned long zslDeleteRangeByScore(zskiplist* zsl, zrangespec* range /* , dict*
     while (x && (range->maxex ? x->score < range->max : x->score <= range->max)) {
         zskiplistNode* next = x->level[0].forward;
         zslDeleteNode(zsl, x, update);
-        /* dictDelete(dict, x->obj); */
+        dictDelete(dict, x->obj);
         zslFreeNode(x);
         removed++;
         x = next;
@@ -393,7 +393,7 @@ unsigned long zslDeleteRangeByScore(zskiplist* zsl, zrangespec* range /* , dict*
 /*
  * 删除给定rank范围内的跳跃表节点，返回删除节点的个数
  */
-unsigned long zslDeleteRangeByRank(zskiplist* zsl, unsigned int start, unsigned int end /* , dict* dict */) {
+unsigned long zslDeleteRangeByRank(zskiplist* zsl, unsigned int start, unsigned int end , dict* dict) {
     zskiplistNode* update[ZSKIPLIST_MAXLEVEL];
     zskiplistNode* x;
     unsigned long traversed = 0;
@@ -421,7 +421,7 @@ unsigned long zslDeleteRangeByRank(zskiplist* zsl, unsigned int start, unsigned 
 
         zslDeleteNode(zsl, x, update);
 
-        /* dictDelete(dict, x->obj); */
+        dictDelete(dict, x->obj);
 
         zslFreeNode(x);
 

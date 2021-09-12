@@ -56,31 +56,19 @@ typedef struct zskiplist {
 
 } zskiplist;
 
-/* 有序集合 */
-
-/*
- * 表示开区间/闭区间范围的结构
- */
-typedef struct {
-
-    double min, max;
-
-    int minex, maxex;
-} zrangespec;
-
-zskiplist* zslCreate(void);
-void zslFree(zskiplist* zsl);
-zskiplistNode* zslInsert(zskiplist* zsl, double score, robj* obj);
-int zslDelete(zskiplist* zsl, double score, robj* obj);
-int zslIsInRange(zskiplist* zsl, zrangespec* range);
-zskiplistNode* zslFirstInRange(zskiplist* zsl, zrangespec* range);
-zskiplistNode* zslLastInRange(zskiplist* zsl, zrangespec* range);
-unsigned long zslDeleteRangeByScore(zskiplist* zsl, zrangespec* range /* , dict* dict */);
-unsigned long zslDeleteRangeByRank(zskiplist* zsl, unsigned int start, unsigned int end /* , dict* dict */);
-unsigned long zslGetRank(zskiplist* zsl, double score, robj* obj);
-zskiplistNode* zslGetElementByRank(zskiplist* zsl, unsigned long rank);
-
-int compareStringObjects(robj* a, robj* b);
-int equalStringObjects(robj* a, robj* b);
+//zskiplist* zslCreate(void);
+//void zslFree(zskiplist* zsl);
+//zskiplistNode* zslInsert(zskiplist* zsl, double score, robj* obj);
+//int zslDelete(zskiplist* zsl, double score, robj* obj);
+//int zslIsInRange(zskiplist* zsl, zrangespec* range);
+//zskiplistNode* zslFirstInRange(zskiplist* zsl, zrangespec* range);
+//zskiplistNode* zslLastInRange(zskiplist* zsl, zrangespec* range);
+//unsigned long zslDeleteRangeByScore(zskiplist* zsl, zrangespec* range /* , dict* dict */);
+//unsigned long zslDeleteRangeByRank(zskiplist* zsl, unsigned int start, unsigned int end /* , dict* dict */);
+//unsigned long zslGetRank(zskiplist* zsl, double score, robj* obj);
+//zskiplistNode* zslGetElementByRank(zskiplist* zsl, unsigned long rank);
+//
+//int compareStringObjects(robj* a, robj* b);
+//int equalStringObjects(robj* a, robj* b);
 
 #endif //TINYREDIS_ZSKIPLIST_H

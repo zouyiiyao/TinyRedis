@@ -83,6 +83,16 @@ typedef struct zset {
 } zset;
 
 /*
+ * 有序集合，表示开区间/闭区间范围的结构
+ */
+typedef struct {
+
+    double min, max;
+
+    int minex, maxex;
+} zrangespec;
+
+/*
  * 列表类型迭代器结构体定义
  */
 typedef struct {
@@ -248,5 +258,24 @@ int hashTypeNext(hashTypeIterator* hi);
 void hashTypeCurrentFromZiplist(hashTypeIterator* hi, int what, unsigned char** vstr, unsigned int* vlen, long long* vll);
 void hashTypeCurrentFromHashTable(hashTypeIterator* hi, int what, robj** dst);
 robj* hashTypeCurrentObject(hashTypeIterator* hi, int what);
+
+/* Sorted sets data type */
+zskiplist* zslCreate(void);
+void zslFree(zskiplist* zsl);
+void zslFreeNode(zskiplistNode* node);
+zskiplistNode* zslInsert(zskiplist* zsl, double score, robj* obj);
+int zslDelete(zskiplist* zsl, double score, robj* obj);
+zskiplistNode* zslFirstInRange(zskiplist* zsl, zrangespec* range);
+zskiplistNode* zslLastInRange(zskiplist* zsl, zrangespec* range);
+unsigned long zslGetRank(zskiplist* zsl, double score, robj* o);
+zskiplistNode* zslGetElementByRank(zskiplist* zsl, unsigned long rank);
+// encoding is ziplist
+unsigned char* zzlInsert(unsigned char* zl, robj* ele, double score);
+double zzlGetScore(unsigned char* sptr);
+void zzlNext(unsigned char* zl, unsigned char** eptr, unsigned char** sptr);
+void zzlPrev(unsigned char* zl, unsigned char** eptr, unsigned char** sptr);
+// zset
+unsigned int zsetLength(robj* zobj);
+void zsetConvert(robj* zobj, int encoding);
 
 #endif //TINYREDIS_REDIS_H
